@@ -9,7 +9,7 @@ export default function Home() {
       <section>
         <Header/>
       </section>
-      <section className="flex w-full justify-between">
+      <section className="flex w-full justify-between container">
         <TTS />
         <Outputs/>
       </section>
