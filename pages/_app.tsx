@@ -1,16 +1,21 @@
+import ReactQueryProvider from "@/lib/providers/ReactQueryProvider";
 import "@/styles/globals.css";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { AppProps } from "next/app";
-import { Inter } from 'next/font/google'
+import { Inter } from "next/font/google";
 
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-})
- 
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <main className={inter.className}>
-      <Component {...pageProps} />
+      <ReactQueryProvider>
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </ReactQueryProvider>
     </main>
   );
 }
