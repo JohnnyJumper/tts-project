@@ -5,7 +5,7 @@ export default function Document() {
   return (
     <Html lang="en" className={cn("dark")}>
       <Head />
-      <body className={cn("min-h-screen bg-background font-sans antialiased")}>
+      <body className={cn("min-h-screen bg-background font-sans antialiased no-scrollbar")}>
         <Main />
         <NextScript />
       </body>
