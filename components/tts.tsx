@@ -5,14 +5,22 @@ import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchVoiceModelInfo } from "@/pages/api/fetchVoiceModelInfo";
 import { createTTSJob } from "@/pages/api/createTtsJob";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { INFERENCE_JOB } from "@/types/voiceAPI";
 
 export default function TTS() {
   const [inputText, setInputText] = useState("");
   const [selectedModel, setSelectedModel] = useState<number | null>(null);
+  const [latestJobs, setLatestJobs] = useLocalStorage<INFERENCE_JOB[]>(
+    "latestJobs",
+    []
+  );
+
+  const [isUploading, setIsUploading] = useState(false);
 
   const { data: models, isLoading } = useQuery({
     queryFn: async () => await fetchVoiceModelInfo(),
-    queryKey: ["voiceModelInfo"], //Array according to Documentation
+    queryKey: ["voiceModelInfo"],
   });
 
   const createTtsMutation = useMutation({
@@ -27,6 +35,7 @@ export default function TTS() {
 
   const handleButtonClick = useCallback(() => {
     if (!selectedModel || !inputText) return;
+    setIsUploading(true);
     createTtsMutation.mutate(
       {
         voiceModel: selectedModel,
@@ -34,10 +43,16 @@ export default function TTS() {
       },
       {
         onSuccess: (data) => {
-          console.log({ data });
+          if (data !== null) {
+            const jobs = [data, ...latestJobs];
+            setLatestJobs(jobs);
+          }
         },
         onError: (error) => {
           console.error(error);
+        },
+        onSettled: (data) => {
+          setIsUploading(false);
         },
       }
     );
@@ -110,8 +125,13 @@ export default function TTS() {
 
       <div className="flex justify-end">
         <Button
-          className="text-white text-sm font-medium bg-slate-900 py-2 px-4 rounded-md"
+          className={cn(
+            "text-white text-sm font-medium bg-slate-900 py-2 px-4 rounded-md",
+            "data-[hover]:bg-slate-700 data-[active]:bg-slate-600",
+            "data-[disabled]:bg-slate-500"
+          )}
           onClick={handleButtonClick}
+          disabled={isUploading}
         >
           Convert
         </Button>
