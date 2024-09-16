@@ -1,7 +1,8 @@
+"use client";
 import React, { useState, useCallback } from "react";
 import { Select, Field, Label, Textarea, Button } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { cn } from "@/lib/utils";
+import { cn, LS_KEY } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchVoiceModelInfo } from "@/pages/api/fetchVoiceModelInfo";
 import { createTTSJob } from "@/pages/api/createTtsJob";
@@ -12,7 +13,7 @@ export default function TTS() {
   const [inputText, setInputText] = useState("");
   const [selectedModel, setSelectedModel] = useState<number | null>(null);
   const [latestJobs, setLatestJobs] = useLocalStorage<INFERENCE_JOB[]>(
-    "latestJobs",
+    LS_KEY,
     []
   );
 
@@ -44,7 +45,7 @@ export default function TTS() {
       {
         onSuccess: (data) => {
           if (data !== null) {
-            const jobs = [data, ...latestJobs];
+            const jobs = [data, ...latestJobs].slice(0, 5);
             setLatestJobs(jobs);
           }
         },
@@ -76,7 +77,7 @@ export default function TTS() {
   );
 
   return (
-    <div className="max-w-[400px] w-full border border-slate-300 rounded-lg p-5">
+    <div className="max-w-[400px] w-full min-h-96 border border-slate-300 rounded-lg p-5">
       <div className="mb-6">
         <h1 className="font-semibold text-lg">Text to speech</h1>
         <sub className="text-sm text-slate-500">

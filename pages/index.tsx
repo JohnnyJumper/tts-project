@@ -1,3 +1,4 @@
+import { ClientOnly } from "@/components/clientOnly";
 import Header from "@/components/header";
 import Outputs from "@/components/outputs";
 import TTS from "@/components/tts";
@@ -6,7 +7,7 @@ import * as React from "react";
 
 export default function Home() {
   return (
-    <>
+    <ClientOnly>
       <section>
         <Header />
       </section>
@@ -19,6 +20,6 @@ export default function Home() {
         <TTS />
         <Outputs />
       </section>
-    </>
+    </ClientOnly>
   );
 }
