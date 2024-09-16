@@ -1,5 +1,5 @@
 "use client";
-import { cn, LS_KEY, minutesPass } from "@/lib/utils";
+import { approximateProgressWidth, cn, LS_KEY, minutesPass } from "@/lib/utils";
 import { INFERENCE_JOB } from "@/types/voiceAPI";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import * as React from "react";
@@ -26,7 +26,7 @@ function ConversionTile({ jobData }: { jobData: INFERENCE_JOB }) {
   const jobDate = new Date(jobData.createdAt);
   const modelTitle = jobData.model?.title;
   const minutesPast = minutesPass(jobDate);
-
+  const progressBarWidth = approximateProgressWidth(jobDate);
   return (
     <div
       className={cn(
@@ -41,7 +41,7 @@ function ConversionTile({ jobData }: { jobData: INFERENCE_JOB }) {
         </span>
         <span className="underline underline-offset-4">{modelTitle}</span>
       </div>
-      {jobStatus === "Converting" && <ProgressBar width="46%" />}
+      {jobStatus === "Converting" && <ProgressBar width={progressBarWidth} />}
     </div>
   );
 }

@@ -14,3 +14,12 @@ export function minutesPass(fromDate: Date): number {
   const totalSeconds = Math.floor(milliDiff / 1000);
   return Math.floor(totalSeconds / 60);
 }
+
+export function approximateProgressWidth(fromDate: Date): `${number}%` {
+  const minutesPast = minutesPass(fromDate);
+  const maxWaitTime = 5; // minutes
+  if (minutesPast > maxWaitTime) return "98%";
+
+  const approximateProcentile = Math.floor((100 * minutesPast) / maxWaitTime);
+  return `${approximateProcentile}%`;
+}
