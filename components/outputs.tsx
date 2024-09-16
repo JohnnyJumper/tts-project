@@ -11,7 +11,7 @@ import { useCallback, useEffect } from "react";
 export default function Outputs() {
   const [latestJob] = useLocalStorage<INFERENCE_JOB[]>(LS_KEY);
   return (
-    <div className="max-w-[400px] w-full min-h-96 border border-slate-300 rounded-lg">
+    <div className="max-w-[400px] w-full min-h-[416px] border border-slate-300 rounded-lg">
       <div className="p-5">
         <h1 className="font-semibold text-lg">Outputs</h1>
         <sub className="text-sm text-slate-500">
@@ -69,7 +69,7 @@ function ConversionTile({
   }, [jobData]);
 
   //? Question do I need to delete the job after 4 hours?
-  //? In docs it is said that url is expired
+  //? In docs it is said that url is expired, does it mean i need to refetch?
   // useEffect(() => {
   //   const fourHoursInMinutes = 240; // 60 * 4
   //   if (minutesPast > fourHoursInMinutes) {
@@ -80,12 +80,7 @@ function ConversionTile({
   // }, [setLatestJobs, minutesPast, index]);
 
   return (
-    <div
-      className={cn(
-        "p-5 pt-3 pr-0 pb-5 border border-x-0 border-t-slate-300 border-t-1 border-b-0 max-h-14",
-        jobStatus === "Converting" && "pt-3"
-      )}
-    >
+    <div className="p-5 pt-3 pb-5 border border-x-0 border-t-slate-300 border-t-1 border-b-0 max-h-16">
       <div className="flex flex-row justify-between items-center text-xs w-full">
         <div>
           <span>{jobStatus}</span>
@@ -96,7 +91,7 @@ function ConversionTile({
         </div>
         {jobStatus === "Ready" && (
           <Button
-            className="w-8 h-8 flex justify-center mr-5 border rounded-md items-center"
+            className="w-8 h-8 flex justify-center border rounded-md items-center"
             onClick={handleDownloadClick}
           >
             <ArrowDownTrayIcon className="h-4 w-4" />
@@ -110,7 +105,7 @@ function ConversionTile({
 
 function ProgressBar({ width }: { width: `${number}%` }) {
   return (
-    <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700 mt-2">
+    <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700 mt-2 pr-5">
       <div className="bg-slate-900 h-2 rounded-full" style={{ width }}></div>
     </div>
   );

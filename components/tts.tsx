@@ -20,7 +20,11 @@ export default function TTS() {
   const [isUploading, setIsUploading] = useState(false);
 
   const { data: models, isLoading } = useQuery({
-    queryFn: async () => await fetchVoiceModelInfo(),
+    queryFn: async () => {
+      const models = await fetchVoiceModelInfo();
+      setSelectedModel(models.data[0].id);
+      return models;
+    },
     queryKey: ["voiceModelInfo"],
   });
 
@@ -77,7 +81,7 @@ export default function TTS() {
   );
 
   return (
-    <div className="max-w-[400px] w-full min-h-96 border border-slate-300 rounded-lg p-5">
+    <div className="max-w-[400px] w-full min-h-[416px] border border-slate-300 rounded-lg p-5">
       <div className="mb-6">
         <h1 className="font-semibold text-lg">Text to speech</h1>
         <sub className="text-sm text-slate-500">

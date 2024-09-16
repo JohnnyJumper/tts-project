@@ -11,6 +11,10 @@ export function minutesPass(fromDate: Date): number {
   const now = new Date().getTime();
   const past = fromDate.getTime();
   const milliDiff = now - past;
+  if (milliDiff < 10) {
+    // hack to make sure the bar is not 100% imidiatelly after clicking
+    return 0;
+  }
   const totalSeconds = Math.floor(milliDiff / 1000);
   return Math.floor(totalSeconds / 60);
 }
