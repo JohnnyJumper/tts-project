@@ -6,7 +6,7 @@ import { Button } from "@headlessui/react";
 import { ArrowDownTrayIcon } from "@heroicons/react/20/solid";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 export default function Outputs() {
   const [latestJob] = useLocalStorage<INFERENCE_JOB[]>(LS_KEY);
@@ -32,19 +32,24 @@ function ConversionTile({
   jobData: INFERENCE_JOB;
   index: number;
 }) {
-  const [latestJob, setLatestJobs] = useLocalStorage<INFERENCE_JOB[]>(LS_KEY);
+  const [latestJobs, setLatestJobs] = useLocalStorage<INFERENCE_JOB[]>(LS_KEY);
   useQuery({
     queryFn: async () => {
       const jobUpdate = await fetchTTSJobById(jobData.id);
       if (jobUpdate.status !== jobData.status) {
-        const jobs = [...latestJob];
+        const jobs = [...latestJobs];
         jobs[index] = jobUpdate;
+        if (jobUpdate.status !== "success" && jobUpdate.status !== "running") {
+          // delete this job
+          jobs.splice(index, 1);
+        }
         setLatestJobs(jobs);
       }
+      return jobUpdate;
     },
     queryKey: [`TTSJob#${jobData.id}`],
-    refetchInterval: 1000,
-    enabled: jobData.status === "running",
+    refetchInterval: jobData.status === "running" ? 1_000 : 60_000,
+    enabled: jobData.status === "running" || jobData.status === "success",
   });
 
   const jobStatus = jobData.status === "running" ? "Converting" : "Ready";
@@ -63,6 +68,17 @@ function ConversionTile({
     document.body.removeChild(link);
   }, [jobData]);
 
+  //? Question do I need to delete the job after 4 hours?
+  //? In docs it is said that url is expired
+  // useEffect(() => {
+  //   const fourHoursInMinutes = 240; // 60 * 4
+  //   if (minutesPast > fourHoursInMinutes) {
+  //     const jobs = [...latestJobs];
+  //     jobs.splice(index, 1);
+  //     setLatestJobs(jobs);
+  //   }
+  // }, [setLatestJobs, minutesPast, index]);
+
   return (
     <div
       className={cn(
@@ -78,12 +94,14 @@ function ConversionTile({
           </span>
           <span className="underline underline-offset-4">{modelTitle}</span>
         </div>
-        <Button
-          className="w-8 h-8 flex justify-center mr-5 border rounded-md items-center"
-          onClick={handleDownloadClick}
-        >
-          <ArrowDownTrayIcon className="h-4 w-4" />
-        </Button>
+        {jobStatus === "Ready" && (
+          <Button
+            className="w-8 h-8 flex justify-center mr-5 border rounded-md items-center"
+            onClick={handleDownloadClick}
+          >
+            <ArrowDownTrayIcon className="h-4 w-4" />
+          </Button>
+        )}
       </div>
       {jobStatus === "Converting" && <ProgressBar width={progressBarWidth} />}
     </div>

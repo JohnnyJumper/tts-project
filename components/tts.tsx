@@ -117,7 +117,7 @@ export default function TTS() {
         </Label>
         <Textarea
           name="input_text"
-          className="border border-slate-300 min-w-80 rounded-md py-2 px-3 text-sm min-h-20"
+          className="border border-slate-300 rounded-md py-2 px-3 text-sm min-h-20"
           placeholder="Add text here"
           value={inputText}
           onChange={handleInputTextChange}
