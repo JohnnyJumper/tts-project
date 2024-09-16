@@ -23,6 +23,9 @@ export async function createTTSJob({
   };
   const url = "https://arpeggi.io/api/kits/v1/tts";
 
-  const response = await fetch(url, options).then((r) => r.json());
-  return response;
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error("Failed to create the tts job");
+  }
+  return response.json();
 }

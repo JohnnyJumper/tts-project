@@ -16,6 +16,10 @@ export async function fetchVoiceModelInfo(): Promise<VOICE_API_RESPONSE> {
     },
   };
   const url = "https://arpeggi.io/api/kits/v1/voice-models";
-  const response = await fetch(url, options).then((r) => r.json());
-  return response;
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error("Failed to fetch the voice model data");
+  }
+
+  return response.json();
 }
