@@ -36,15 +36,13 @@ function ConversionTile({
   useQuery({
     queryFn: async () => {
       const jobUpdate = await fetchTTSJobById(jobData.id);
-      if (jobUpdate.status !== jobData.status) {
-        const jobs = [...latestJobs];
-        jobs[index] = jobUpdate;
-        if (jobUpdate.status !== "success" && jobUpdate.status !== "running") {
-          // delete this job
-          jobs.splice(index, 1);
-        }
-        setLatestJobs(jobs);
+      const jobs = [...latestJobs];
+      jobs[index] = jobUpdate;
+      if (jobUpdate.status !== "success" && jobUpdate.status !== "running") {
+        // delete this job
+        jobs.splice(index, 1);
       }
+      setLatestJobs(jobs);
       return jobUpdate;
     },
     queryKey: [`TTSJob#${jobData.id}`],
@@ -67,17 +65,6 @@ function ConversionTile({
     link.click();
     document.body.removeChild(link);
   }, [jobData]);
-
-  //? Question do I need to delete the job after 4 hours?
-  //? In docs it is said that url is expired, does it mean i need to refetch?
-  // useEffect(() => {
-  //   const fourHoursInMinutes = 240; // 60 * 4
-  //   if (minutesPast > fourHoursInMinutes) {
-  //     const jobs = [...latestJobs];
-  //     jobs.splice(index, 1);
-  //     setLatestJobs(jobs);
-  //   }
-  // }, [setLatestJobs, minutesPast, index]);
 
   return (
     <div className="p-5 pt-3 pb-5 border border-x-0 border-t-slate-300 border-t-1 border-b-0 max-h-16">
